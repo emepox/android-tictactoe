@@ -1,14 +1,13 @@
 package de.sdomma.tictactoe
 
 class Game {
-    val board: Array<Array<Player?>> = arrayOf(
+    var board: Array<Array<Player?>> = arrayOf(
         arrayOf(null, null, null),
         arrayOf(null, null, null),
         arrayOf(null, null, null)
     )
 
     var currentPlayer: Player = Player.ONE
-        private set
 
     var gameStatus: GameStatus = GameStatus.RUNNING
         private set

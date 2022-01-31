@@ -7,7 +7,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.isVisible
+
+import de.sdomma.tictactoe.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,8 +18,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var currentPlayerTV: TextView
     private lateinit var winningMessageTV: TextView
     private lateinit var btnReset: Button
-
     private lateinit var counterOneTV: TextView
+    private lateinit var board: Array<Array<Player?>>
+
+    // Binding
+
+    lateinit var binding: ActivityMainBinding
+
+
     private var counterOne: Int = 0
         set(value) {
             field = value
@@ -43,26 +50,40 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        counterOneTV = findViewById(R.id.counter_one)
-        counterTwoTV = findViewById(R.id.counter_two)
-        counterDrawTV = findViewById(R.id.counter_draw)
+        // Binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        currentPlayerTV = findViewById(R.id.current_player_tv)
-        winningMessageTV = findViewById(R.id.winning_message_tv)
-        btnReset = findViewById(R.id.btn_reset)
+        counterOneTV = binding.counterOne
+        counterTwoTV = binding.counterTwo
+        counterDrawTV = binding.counterDraw
 
-        val input0: ImageView = findViewById(R.id.input_0)
-        val input1: ImageView = findViewById(R.id.input_1)
-        val input2: ImageView = findViewById(R.id.input_2)
-        val input3: ImageView = findViewById(R.id.input_3)
-        val input4: ImageView = findViewById(R.id.input_4)
-        val input5: ImageView = findViewById(R.id.input_5)
-        val input6: ImageView = findViewById(R.id.input_6)
-        val input7: ImageView = findViewById(R.id.input_7)
-        val input8: ImageView = findViewById(R.id.input_8)
+        // counterOneTV = findViewById(R.id.counter_one)
+        // counterTwoTV = findViewById(R.id.counter_two)
+        // counterDrawTV = findViewById(R.id.counter_draw)
+
+        currentPlayerTV = binding.currentPlayerTv
+        winningMessageTV = binding.winningMessageTv
+        btnReset = binding.btnReset
+
+        // currentPlayerTV = findViewById(R.id.current_player_tv)
+        // winningMessageTV = findViewById(R.id.winning_message_tv)
+        // btnReset = findViewById(R.id.btn_reset)
+
+
+        //val input0: ImageView = findViewById(R.id.input_0)
+        //val input1: ImageView = findViewById(R.id.input_1)
+        //val input2: ImageView = findViewById(R.id.input_2)
+        //val input3: ImageView = findViewById(R.id.input_3)
+        //val input4: ImageView = findViewById(R.id.input_4)
+        //val input5: ImageView = findViewById(R.id.input_5)
+        //val input6: ImageView = findViewById(R.id.input_6)
+        //val input7: ImageView = findViewById(R.id.input_7)
+        //val input8: ImageView = findViewById(R.id.input_8)
 
         inputFields = mutableListOf(
-            input0, input1, input2, input3, input4, input5, input6, input7, input8
+            binding.input0, binding.input1, binding.input2, binding.input3, binding.input4, binding.input5, binding.input6, binding.input7, binding.input8
         ).apply {
             this.forEachIndexed { index, iv ->
                 iv.setOnClickListener {
@@ -113,7 +134,65 @@ class MainActivity : AppCompatActivity() {
         input8.setOnClickListener {
             dothething(winningMessageTV, currentPlayerTV, input8, 2, 2)
         }*/
+
     }
+
+
+    companion object {
+        val PLAYER_ONE_COUNTER_KEY = "playerOneCounterKey"
+        val PLAYER_TWO_COUNTER_KEY = "playerTwoCounterKey"
+        val DRAW_COUNTER_KEY = "drawCounterKey"
+        var BOARD_KEY = "boardKey"
+        var CURRENT_PLAYER_KEY = "currentPlayer"
+
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putInt(PLAYER_ONE_COUNTER_KEY, counterOne)
+        outState.putInt(PLAYER_TWO_COUNTER_KEY, counterTwo)
+        outState.putInt(DRAW_COUNTER_KEY, counterDraw)
+
+        outState.putSerializable(BOARD_KEY, myGame.board)
+        outState.putSerializable(CURRENT_PLAYER_KEY, myGame.currentPlayer)
+
+
+
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+
+        counterOne = savedInstanceState.getInt(PLAYER_ONE_COUNTER_KEY)
+        counterTwo = savedInstanceState.getInt(PLAYER_TWO_COUNTER_KEY)
+        counterDraw = savedInstanceState.getInt(DRAW_COUNTER_KEY)
+        myGame.board = savedInstanceState.getSerializable(BOARD_KEY) as Array<Array<Player?>>
+        myGame.currentPlayer = savedInstanceState.getSerializable(CURRENT_PLAYER_KEY) as Player
+        restoreBoard()
+
+    }
+
+    private fun restoreBoard() {
+        myGame.board.flatten().forEachIndexed { position, player ->
+
+            if (player == Player.ONE) {
+                // Set icon for player one
+                inputFields?.get(position)?.let {
+                    it.setImageResource(R.drawable.ic_player_one)
+                }
+            } else if (player == Player.TWO) {
+                // Set icon for player two
+                inputFields?.get(position)?.let {
+                    it.setImageResource(R.drawable.ic_player_two)
+                }
+            }
+        }
+    }
+
+
+
 
     private fun dothething(
         inputField: ImageView,
@@ -204,3 +283,4 @@ class MainActivity : AppCompatActivity() {
         currentPlayerTV.text = "Your turn Player ${myGame.currentPlayer}"
     }
 }
+
