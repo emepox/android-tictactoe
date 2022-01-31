@@ -1,6 +1,7 @@
 package de.sdomma.tictactoe
 
 class Game {
+
     var board: Array<Array<Player?>> = arrayOf(
         arrayOf(null, null, null),
         arrayOf(null, null, null),

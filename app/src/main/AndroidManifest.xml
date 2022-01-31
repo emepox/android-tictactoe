@@ -10,7 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TicTacToe">
         <activity
-            android:name=".MainActivity"
+            android:name=".GameFragment"
+            android:exported="false" />
+        <activity
+            android:name=".FragmentsActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
